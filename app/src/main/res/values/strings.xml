@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Workout routine</string>
+    <string name="exerciseName">Exercise name</string>
+    <string name="repetitions">Repetitions:</string>
+    <string name="repUp">+1</string>
+    <string name="repDown">-1</string>
+    <string name="weightInKg">Weight(kg):</string>
+    <string name="weightUp">+1kg</string>
+    <string name="weightDown">-1kg</string>
+    <string name="resetTimer">Reset timer</string>
+    <string name="nextExercise">Next exercise</string>
+    <string name="previousExercise">Previous exercise</string>
+    <string name="settings">Settings</string>
+</resources>
