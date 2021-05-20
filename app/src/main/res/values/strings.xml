@@ -11,4 +11,7 @@
     <string name="nextExercise">Next exercise</string>
     <string name="previousExercise">Previous exercise</string>
     <string name="settings">Settings</string>
+    <string name="weight">0</string>
+    <string name="reps">0</string>
+    <string name="timer">00:00</string>
 </resources>

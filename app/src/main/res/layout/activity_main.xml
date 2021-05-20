@@ -29,7 +29,7 @@
         app:layout_constraintTop_toBottomOf="@+id/exerciseName">
 
         <TextView
-            android:layout_width="180dp"
+            android:layout_width="140dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center"
@@ -44,7 +44,7 @@
             android:ems="2"
             android:gravity="center_vertical"
             android:inputType="number"
-            android:text="0"
+            android:text="@string/reps"
             android:textSize="30sp" />
 
         <LinearLayout
@@ -58,14 +58,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="30dp"
-                android:text="@string/repUp" />
+                android:text="@string/repUp"
+                android:onClick="onAddOneRep"/>
 
             <Button
                 android:id="@+id/buttonRepDown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="30dp"
-                android:text="@string/repDown" />
+                android:text="@string/repDown"
+                android:onClick="onRemoveOneRep"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -80,7 +82,7 @@
         app:layout_constraintTop_toBottomOf="@+id/repetitions">
 
         <TextView
-            android:layout_width="180dp"
+            android:layout_width="140dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center"
@@ -94,8 +96,8 @@
             android:layout_weight="1"
             android:ems="2"
             android:gravity="center_vertical"
-            android:inputType="number"
-            android:text="0"
+            android:inputType="numberDecimal"
+            android:text="@string/weight"
             android:textSize="30sp" />
 
         <LinearLayout
@@ -109,20 +111,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="30dp"
-                android:text="@string/weightUp" />
+                android:text="@string/weightUp"
+                android:onClick="onAddOneKg"/>
 
             <Button
                 android:id="@+id/buttonWeightDown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="30dp"
-                android:text="@string/weightDown" />
+                android:text="@string/weightDown"
+                android:onClick="onRemoveOneKg"/>
         </LinearLayout>
 
     </LinearLayout>
 
     <EditText
-        android:id="@+id/editTextTime"
+        android:id="@+id/timer"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
@@ -130,6 +134,7 @@
         android:ems="10"
         android:inputType="time"
         android:textSize="30sp"
+        android:text="@string/timer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
@@ -141,7 +146,7 @@
         android:text="@string/resetTimer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTime" />
+        app:layout_constraintTop_toBottomOf="@+id/timer" />
 
     <Button
         android:id="@+id/button4"
