@@ -2,12 +2,12 @@ package com.example.workoutroutine
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
-import android.widget.EditText
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         savedInstanceState.run {
             numberOfReps.text.replace(0, numberOfReps.text.length, getString(NUMBER_OF_REPS))
             numberOfKg.text.replace(0, numberOfKg.text.length, getString(NUMBER_OF_KG))
-            timer.text.replace(0, timer.text.length, getString(TIMER))
+            timeLeft.text.replace(0, timeLeft.text.length, getString(TIMER))
         }
     }
 
@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         outState.run {
             putString(NUMBER_OF_REPS, numberOfReps.text.toString())
             putString(NUMBER_OF_KG, numberOfKg.text.toString())
-            putString(TIMER, timer.text.toString())
+            putString(TIMER, timeLeft.text.toString())
         }
         super.onSaveInstanceState(outState)
     }
@@ -70,5 +70,41 @@ class MainActivity : AppCompatActivity() {
         const val NUMBER_OF_KG = "userKg"
         const val NUMBER_OF_REPS = "userReps"
         const val TIMER = "userTimer"
+    }
+
+    //    TODO(Can add better memorization of user-set time)
+    //    TODO(Add reset button)
+    private lateinit var restTimer: RestTimer
+    private var userTimerValue = 0L
+    fun onTimerStart(view: View) {
+        if (timeLeft.text.toString() == "0:00")
+            restTimer = RestTimer(timer, userTimerValue * 1000 + 1000)
+        else {
+            userTimerValue = convertTime(timeLeft.text.toString())
+            restTimer = RestTimer(timer, userTimerValue * 1000 + 1000)
+        }
+        restTimer.start()
+        timeLeft.isEnabled = false
+        buttonStartTimer.isEnabled = false
+        buttonStopTimer.isEnabled = true
+    }
+
+    fun onStopTimer(view: View) {
+        timeLeft.isEnabled = true
+        restTimer.cancel()
+        buttonStartTimer.isEnabled = true
+        buttonStopTimer.isEnabled = false
+    }
+
+    private fun convertTime(input: String): Long {
+        return if (input.length > 3 && input[input.length - 3].compareTo(':') == 0) {
+            val splitValue = input.split(":")
+            (splitValue[0].toLong() * 60 + splitValue[1].toLong())
+        } else if (!input.contains(":")) {
+            input.toLong()
+        } else {
+            Toast.makeText(applicationContext, "Wrong input!", Toast.LENGTH_SHORT).show()
+            0L
+        }
     }
 }

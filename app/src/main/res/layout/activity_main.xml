@@ -59,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="30dp"
                 android:text="@string/repUp"
-                android:onClick="onAddOneRep"/>
+                android:onClick="onAddOneRep" />
 
             <Button
                 android:id="@+id/buttonRepDown"
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="30dp"
                 android:text="@string/repDown"
-                android:onClick="onRemoveOneRep"/>
+                android:onClick="onRemoveOneRep" />
         </LinearLayout>
     </LinearLayout>
 
@@ -112,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:minHeight="30dp"
                 android:text="@string/weightUp"
-                android:onClick="onAddOneKg"/>
+                android:onClick="onAddOneKg" />
 
             <Button
                 android:id="@+id/buttonWeightDown"
@@ -120,33 +120,11 @@
                 android:layout_height="wrap_content"
                 android:minHeight="30dp"
                 android:text="@string/weightDown"
-                android:onClick="onRemoveOneKg"/>
+                android:onClick="onRemoveOneKg" />
         </LinearLayout>
 
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/timer"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:gravity="center"
-        android:ems="10"
-        android:inputType="time"
-        android:textSize="30sp"
-        android:text="@string/timer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
-
-    <Button
-        android:id="@+id/buttonResetTimer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/resetTimer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timer" />
 
     <Button
         android:id="@+id/button4"
@@ -171,5 +149,44 @@
         android:text="@string/settings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+        <EditText
+            android:id="@+id/timeLeft"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:ems="5"
+            android:gravity="center"
+            android:inputType="time"
+            android:text="@string/timer"
+            android:textSize="40sp" />
+
+        <Button
+            android:id="@+id/buttonStartTimer"
+            android:layout_width="300dp"
+            android:layout_height="60dp"
+            android:onClick="onTimerStart"
+            android:text="@string/resetTimer"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/buttonStopTimer"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:enabled="false"
+            android:onClick="onStopTimer"
+            android:text="@string/stopTimer"
+            android:textSize="12sp" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
