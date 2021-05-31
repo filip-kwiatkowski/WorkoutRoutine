@@ -3,14 +3,56 @@ package com.example.workoutroutine
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.*
 
 class MainActivity : AppCompatActivity() {
 
+    var userExerciseSets : MutableList<ExerciseSet> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+//        val sitUp = Exercise("sitUp", 5, 67.5)
+//        val pushUp = Exercise("pushUp", 9, 50.0)
+//        val setA = ExerciseSet("Set A", mutableListOf(sitUp,pushUp))
+
+//        val fos: FileOutputStream = this.openFileOutput("savedExerciseSet", MODE_PRIVATE)
+//        val os = ObjectOutputStream(fos)
+//       os.writeObject(setA)
+//        os.close()
+//        fos.close()
+
+        val fis: FileInputStream = this.openFileInput("savedExerciseSet")
+        val inStr = ObjectInputStream(fis)
+        val setB: ExerciseSet = inStr.readObject() as ExerciseSet
+        userExerciseSets.add(setB)
+        inStr.close()
+        fis.close()
+
+        displayExercise(setB.exerciseElements.first())
+
+
+        spinnerExerciseSet.adapter =
+            ArrayAdapter(
+                this,
+                R.layout.spinner_item,
+                resources.getStringArray(R.array.exercises)
+            )
+
+        spinnerExerciseSet.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                parent.getItemAtPosition(position)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // write code to perform some action
+            }
+        }
+
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -21,6 +63,14 @@ class MainActivity : AppCompatActivity() {
             numberOfKg.text.replace(0, numberOfKg.text.length, getString(NUMBER_OF_KG))
             timeLeft.text.replace(0, timeLeft.text.length, getString(TIMER))
         }
+
+    }
+
+
+    fun displayExercise(exercise: Exercise){
+        exerciseName.text = exercise.exerciseName
+        numberOfReps.text.replace(0, numberOfKg.text.length, exercise.numberOfReps.toString())
+        numberOfKg.text.replace(0, numberOfKg.text.length, exercise.weight.toString())
     }
 
     override fun onBackPressed() {
@@ -107,4 +157,6 @@ class MainActivity : AppCompatActivity() {
             0L
         }
     }
+
+
 }
