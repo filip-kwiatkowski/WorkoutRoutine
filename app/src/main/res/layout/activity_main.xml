@@ -168,17 +168,34 @@
             android:layout_width="300dp"
             android:layout_height="60dp"
             android:onClick="onTimerStart"
-            android:text="@string/resetTimer"
+            android:text="@string/startTimer"
             android:textSize="20sp" />
 
-        <Button
-            android:id="@+id/buttonStopTimer"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:enabled="false"
-            android:onClick="onStopTimer"
-            android:text="@string/stopTimer"
-            android:textSize="12sp" />
+        <LinearLayout
+            android:layout_width="220dp"
+            android:layout_height="40dp">
+
+            <Button
+                android:id="@+id/buttonStopTimer"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:onClick="onStopTimer"
+                android:text="@string/stopTimer"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/buttonResetTimer"
+                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:onClick="onResetTimer"
+                android:text="@string/resetTimer"
+                android:textSize="12sp" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <Spinner
@@ -190,5 +207,14 @@
         android:spinnerMode="dropdown"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/buttonCreateSet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_set"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:onClick="createSet"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

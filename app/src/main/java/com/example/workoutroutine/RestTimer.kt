@@ -20,7 +20,8 @@ class RestTimer(private val id: LinearLayout, millisInFuture: Long = 60000, coun
     override fun onFinish() {
         id.getChildAt(0).isEnabled = true
         id.getChildAt(1).isEnabled = true
-        id.getChildAt(2).isEnabled = false
+        (id.getChildAt(2) as LinearLayout).getChildAt(0).isEnabled = false
+        (id.getChildAt(2) as LinearLayout).getChildAt(1).isEnabled = true
     }
 
 

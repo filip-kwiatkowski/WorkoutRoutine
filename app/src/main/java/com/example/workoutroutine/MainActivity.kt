@@ -11,7 +11,7 @@ import java.io.*
 
 class MainActivity : AppCompatActivity() {
 
-    var userExerciseSets : MutableList<ExerciseSet> = mutableListOf()
+    var userExerciseSets: MutableList<ExerciseSet> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun displayExercise(exercise: Exercise){
+    fun displayExercise(exercise: Exercise) {
         exerciseName.text = exercise.exerciseName
         numberOfReps.text.replace(0, numberOfKg.text.length, exercise.numberOfReps.toString())
         numberOfKg.text.replace(0, numberOfKg.text.length, exercise.weight.toString())
@@ -122,21 +122,24 @@ class MainActivity : AppCompatActivity() {
         const val TIMER = "userTimer"
     }
 
-    //    TODO(Can add better memorization of user-set time)
-    //    TODO(Add reset button)
+    //TODO(Can add better memorization of user-set time)
+
     private lateinit var restTimer: RestTimer
     private var userTimerValue = 0L
+    private var wasTimerPaused = false
+
     fun onTimerStart(view: View) {
         if (timeLeft.text.toString() == "0:00")
-            restTimer = RestTimer(timer, userTimerValue * 1000 + 1000)
+            restTimer = RestTimer(timer, userTimerValue * 1000 + 500)
         else {
             userTimerValue = convertTime(timeLeft.text.toString())
-            restTimer = RestTimer(timer, userTimerValue * 1000 + 1000)
+            restTimer = RestTimer(timer, userTimerValue * 1000 + 500)
         }
         restTimer.start()
         timeLeft.isEnabled = false
         buttonStartTimer.isEnabled = false
         buttonStopTimer.isEnabled = true
+        buttonResetTimer.isEnabled = false
     }
 
     fun onStopTimer(view: View) {
@@ -144,6 +147,7 @@ class MainActivity : AppCompatActivity() {
         restTimer.cancel()
         buttonStartTimer.isEnabled = true
         buttonStopTimer.isEnabled = false
+        buttonResetTimer.isEnabled = true
     }
 
     private fun convertTime(input: String): Long {
@@ -156,6 +160,17 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(applicationContext, "Wrong input!", Toast.LENGTH_SHORT).show()
             0L
         }
+    }
+
+    //TODO(Add set creator)
+    fun createSet(view: View) {}
+
+    fun onResetTimer(view: View) {
+        val min = userTimerValue / 60
+        val sec = userTimerValue % 60
+        if(sec<10) timeLeft.text.replace(0, timeLeft.text.length, "$min:0$sec")
+        else timeLeft.text.replace(0, timeLeft.text.length, "$min:$sec")
+
     }
 
 
