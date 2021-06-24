@@ -12,40 +12,60 @@ import java.io.*
 class MainActivity : AppCompatActivity() {
 
     var userExerciseSets: MutableList<ExerciseSet> = mutableListOf()
+    lateinit var currentSet: ExerciseSet
+    lateinit var currentExercise: Exercise
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        val sitUp = Exercise("sitUp", 5, 67.5)
-//        val pushUp = Exercise("pushUp", 9, 50.0)
-//        val setA = ExerciseSet("Set A", mutableListOf(sitUp,pushUp))
+        if (!isFilePresent("savedExerciseSet")) {
+            val squat = Exercise("Squat", 5, 50.0)
+            val benchPress = Exercise("Bench Press", 5, 40.0)
+            val rowing = Exercise("Rowing", 5, 40.0)
+            val fly = Exercise("Fly", 8, 5.0)
+            val biceps = Exercise("Biceps", 8, 7.5)
+            val triceps = Exercise("Triceps", 8, 10.0)
+            val sitUp = Exercise("Sit Up", 8, 0.0)
+            val calves = Exercise("Calves", 8, 10.0)
+            val forearm = Exercise("Forearm", 12, 20.0)
+            val defaultSeT = ExerciseSet(
+                "Default Set",
+                mutableListOf(squat, benchPress, rowing, fly, biceps, triceps, forearm, sitUp, calves)
+            )
+            userExerciseSets.add(defaultSeT)
 
-//        val fos: FileOutputStream = this.openFileOutput("savedExerciseSet", MODE_PRIVATE)
-//        val os = ObjectOutputStream(fos)
-//       os.writeObject(setA)
-//        os.close()
-//        fos.close()
+            val fos: FileOutputStream = this.openFileOutput("savedExerciseSet", MODE_PRIVATE)
+            val os = ObjectOutputStream(fos)
+            os.writeObject(userExerciseSets)
+            os.close()
+            fos.close()
+        }
 
         val fis: FileInputStream = this.openFileInput("savedExerciseSet")
         val inStr = ObjectInputStream(fis)
-        val setB: ExerciseSet = inStr.readObject() as ExerciseSet
-        userExerciseSets.add(setB)
+        userExerciseSets = inStr.readObject() as MutableList<ExerciseSet>
         inStr.close()
         fis.close()
 
-        displayExercise(setB.exerciseElements.first())
+        val exerciseSetsNameList = mutableListOf<String>()
+        for (set in userExerciseSets) {
+            exerciseSetsNameList.add(set.exerciseSetName)
+        }
 
 
         spinnerExerciseSet.adapter =
             ArrayAdapter(
                 this,
                 R.layout.spinner_item,
-                resources.getStringArray(R.array.exercises)
+                exerciseSetsNameList
             )
 
         spinnerExerciseSet.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                parent.getItemAtPosition(position)
+                currentSet = userExerciseSets.elementAt(position)
+                currentExercise = currentSet.exerciseElements.first()
+                displayExercise(currentExercise)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -53,6 +73,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun isFilePresent(fileName: String): Boolean {
+        val path = this.filesDir.toString() + "/" + fileName
+        val file = File(path)
+        return file.exists()
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -66,10 +92,38 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.run {
+            putString(NUMBER_OF_REPS, numberOfReps.text.toString())
+            putString(NUMBER_OF_KG, numberOfKg.text.toString())
+            putString(TIMER, timeLeft.text.toString())
+        }
+        super.onSaveInstanceState(outState)
+    }
 
-    fun displayExercise(exercise: Exercise) {
+    override fun onResume() {
+        super.onResume()
+
+        val fis: FileInputStream = this.openFileInput("savedExerciseSet")
+        val inStr = ObjectInputStream(fis)
+        userExerciseSets = inStr.readObject() as MutableList<ExerciseSet>
+        inStr.close()
+        fis.close()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        val fos: FileOutputStream = this.openFileOutput("savedExerciseSet", MODE_PRIVATE)
+        val os = ObjectOutputStream(fos)
+        os.writeObject(userExerciseSets)
+        os.close()
+        fos.close()
+    }
+
+    private fun displayExercise(exercise: Exercise) {
         exerciseName.text = exercise.exerciseName
-        numberOfReps.text.replace(0, numberOfKg.text.length, exercise.numberOfReps.toString())
+        numberOfReps.text.replace(0, numberOfReps.text.length, exercise.numberOfReps.toString())
         numberOfKg.text.replace(0, numberOfKg.text.length, exercise.weight.toString())
     }
 
@@ -107,15 +161,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.run {
-            putString(NUMBER_OF_REPS, numberOfReps.text.toString())
-            putString(NUMBER_OF_KG, numberOfKg.text.toString())
-            putString(TIMER, timeLeft.text.toString())
-        }
-        super.onSaveInstanceState(outState)
-    }
-
     companion object {
         const val NUMBER_OF_KG = "userKg"
         const val NUMBER_OF_REPS = "userReps"
@@ -126,7 +171,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var restTimer: RestTimer
     private var userTimerValue = 0L
-    private var wasTimerPaused = false
 
     fun onTimerStart(view: View) {
         if (timeLeft.text.toString() == "0:00")
@@ -162,16 +206,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //TODO(Add set creator)
-    fun createSet(view: View) {}
-
     fun onResetTimer(view: View) {
         val min = userTimerValue / 60
         val sec = userTimerValue % 60
-        if(sec<10) timeLeft.text.replace(0, timeLeft.text.length, "$min:0$sec")
+        if (sec < 10) timeLeft.text.replace(0, timeLeft.text.length, "$min:0$sec")
         else timeLeft.text.replace(0, timeLeft.text.length, "$min:$sec")
 
     }
 
+    fun onPreviousExercise(view: View) {
+        val index = currentSet.exerciseElements.indexOf(currentExercise)
+        if (index > 0) {
+            saveChangesOfExercise(currentExercise)
+            currentExercise = currentSet.exerciseElements[index - 1]
+            displayExercise(currentExercise)
+        } else Toast.makeText(this, "No previous exercises", Toast.LENGTH_SHORT).show()
+    }
 
+    fun onNextExercise(view: View) {
+        val index = currentSet.exerciseElements.indexOf(currentExercise)
+        if (index < currentSet.exerciseElements.count() - 1) {
+            saveChangesOfExercise(currentExercise)
+            currentExercise = currentSet.exerciseElements[index + 1]
+            displayExercise(currentExercise)
+        } else Toast.makeText(this, "No next exercises", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun saveChangesOfExercise(exercise: Exercise) {
+        exercise.numberOfReps = numberOfReps.text.toString().toInt()
+        exercise.weight = numberOfKg.text.toString().toDouble()
+    }
+
+    //TODO(Add set creator)
+    fun onCreateSet(view: View) {}
 }

@@ -130,6 +130,7 @@
         android:id="@+id/button4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onNextExercise"
         android:text="@string/nextExercise"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -138,6 +139,7 @@
         android:id="@+id/button5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="onPreviousExercise"
         android:text="@string/previousExercise"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -215,6 +217,6 @@
         android:text="@string/create_set"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:onClick="createSet"/>
+        android:onClick="onCreateSet"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
