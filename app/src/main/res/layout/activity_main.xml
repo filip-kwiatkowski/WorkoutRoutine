@@ -211,12 +211,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/buttonCreateSet"
+        android:id="@+id/buttonYourSet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/create_set"
+        android:text="@string/your_sets"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:onClick="onCreateSet"/>
+        android:onClick="onYourSet"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

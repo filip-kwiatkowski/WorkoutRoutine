@@ -1,5 +1,6 @@
 package com.example.workoutroutine
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -11,7 +12,7 @@ import java.io.*
 
 class MainActivity : AppCompatActivity() {
 
-    var userExerciseSets: MutableList<ExerciseSet> = mutableListOf()
+    var userExerciseSets: ArrayList<ExerciseSet> = arrayListOf()
     lateinit var currentSet: ExerciseSet
     lateinit var currentExercise: Exercise
 
@@ -31,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             val forearm = Exercise("Forearm", 12, 20.0)
             val defaultSeT = ExerciseSet(
                 "Default Set",
-                mutableListOf(squat, benchPress, rowing, fly, biceps, triceps, forearm, sitUp, calves)
+                arrayListOf(squat, benchPress, rowing, fly, biceps, triceps, forearm, sitUp, calves), 120
             )
             userExerciseSets.add(defaultSeT)
 
@@ -44,11 +45,11 @@ class MainActivity : AppCompatActivity() {
 
         val fis: FileInputStream = this.openFileInput("savedExerciseSet")
         val inStr = ObjectInputStream(fis)
-        userExerciseSets = inStr.readObject() as MutableList<ExerciseSet>
+        userExerciseSets = inStr.readObject() as ArrayList<ExerciseSet>
         inStr.close()
         fis.close()
 
-        val exerciseSetsNameList = mutableListOf<String>()
+        val exerciseSetsNameList = arrayListOf<String>()
         for (set in userExerciseSets) {
             exerciseSetsNameList.add(set.exerciseSetName)
         }
@@ -101,12 +102,18 @@ class MainActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
     }
 
+    companion object {
+        const val NUMBER_OF_KG = "userKg"
+        const val NUMBER_OF_REPS = "userReps"
+        const val TIMER = "userTimer"
+    }
+
     override fun onResume() {
         super.onResume()
 
         val fis: FileInputStream = this.openFileInput("savedExerciseSet")
         val inStr = ObjectInputStream(fis)
-        userExerciseSets = inStr.readObject() as MutableList<ExerciseSet>
+        userExerciseSets = inStr.readObject() as ArrayList<ExerciseSet>
         inStr.close()
         fis.close()
     }
@@ -114,6 +121,7 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
 
+        saveChangesOfCurrentExercise()
         val fos: FileOutputStream = this.openFileOutput("savedExerciseSet", MODE_PRIVATE)
         val os = ObjectOutputStream(fos)
         os.writeObject(userExerciseSets)
@@ -125,6 +133,12 @@ class MainActivity : AppCompatActivity() {
         exerciseName.text = exercise.exerciseName
         numberOfReps.text.replace(0, numberOfReps.text.length, exercise.numberOfReps.toString())
         numberOfKg.text.replace(0, numberOfKg.text.length, exercise.weight.toString())
+
+        val min = currentSet.timer / 60
+        val sec = currentSet.timer % 60
+        val timerString = if (sec < 10)  "$min:0$sec" else "$min:$sec"
+
+        timeLeft.text.replace(0, timeLeft.text.length, timerString)
     }
 
     override fun onBackPressed() {
@@ -161,12 +175,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    companion object {
-        const val NUMBER_OF_KG = "userKg"
-        const val NUMBER_OF_REPS = "userReps"
-        const val TIMER = "userTimer"
-    }
-
     //TODO(Can add better memorization of user-set time)
 
     private lateinit var restTimer: RestTimer
@@ -189,7 +197,6 @@ class MainActivity : AppCompatActivity() {
     fun onStopTimer(view: View) {
         timeLeft.isEnabled = true
         restTimer.cancel()
-        buttonStartTimer.isEnabled = true
         buttonStopTimer.isEnabled = false
         buttonResetTimer.isEnabled = true
     }
@@ -207,6 +214,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onResetTimer(view: View) {
+        buttonStartTimer.isEnabled = true
         val min = userTimerValue / 60
         val sec = userTimerValue % 60
         if (sec < 10) timeLeft.text.replace(0, timeLeft.text.length, "$min:0$sec")
@@ -217,7 +225,7 @@ class MainActivity : AppCompatActivity() {
     fun onPreviousExercise(view: View) {
         val index = currentSet.exerciseElements.indexOf(currentExercise)
         if (index > 0) {
-            saveChangesOfExercise(currentExercise)
+            saveChangesOfCurrentExercise()
             currentExercise = currentSet.exerciseElements[index - 1]
             displayExercise(currentExercise)
         } else Toast.makeText(this, "No previous exercises", Toast.LENGTH_SHORT).show()
@@ -226,17 +234,21 @@ class MainActivity : AppCompatActivity() {
     fun onNextExercise(view: View) {
         val index = currentSet.exerciseElements.indexOf(currentExercise)
         if (index < currentSet.exerciseElements.count() - 1) {
-            saveChangesOfExercise(currentExercise)
+            saveChangesOfCurrentExercise()
             currentExercise = currentSet.exerciseElements[index + 1]
             displayExercise(currentExercise)
         } else Toast.makeText(this, "No next exercises", Toast.LENGTH_SHORT).show()
     }
 
-    private fun saveChangesOfExercise(exercise: Exercise) {
-        exercise.numberOfReps = numberOfReps.text.toString().toInt()
-        exercise.weight = numberOfKg.text.toString().toDouble()
+    private fun saveChangesOfCurrentExercise() {
+        currentExercise.numberOfReps = numberOfReps.text.toString().toInt()
+        currentExercise.weight = numberOfKg.text.toString().toDouble()
+        currentSet.timer = convertTime(timeLeft.text.toString())
     }
 
     //TODO(Add set creator)
-    fun onCreateSet(view: View) {}
+    fun onYourSet(view: View) {
+        val intent = Intent(this, UserSets::class.java).putExtra("userExerciseSets", userExerciseSets)
+        startActivity(intent)
+    }
 }

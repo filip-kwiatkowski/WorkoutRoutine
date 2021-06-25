@@ -16,7 +16,9 @@
     <string name="weight">0</string>
     <string name="reps">0</string>
     <string name="timer">1:00</string>
-    <string name="create_set">Create set</string>
+    <string name="your_sets">Your sets</string>
+    <string name="your_exercise_sets">Your exercise sets:</string>
+    <string name="create_new_set">Create new set</string>
     <string-array name="exercises">
         <item>Set A</item>
         <item>Set B</item>
